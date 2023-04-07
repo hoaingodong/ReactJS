@@ -27,11 +27,11 @@ const Content = (props) => {
     </div>
   );
 };
-const Total = (parts) => {
-  const total = parts.reduce((s, p) => 5);
+const Total = (props) => {
+  console.log(props.parts);
   return (
     <div>
-      <p>{total}</p>
+      <p>total of {props.parts.reduce((accumulator, currentValue) => accumulator + currentValue.exercises, 0)} exercises</p>
     </div>
   );
 };
@@ -52,11 +52,11 @@ const Course = (props) => {
         exercises4={props.course.parts[3].exercises}
       />
       <Total
-        // exercises1={props.course.parts[0].exercises}
+        // exercises1={props.parts.parts[0].exercises}
         // exercises2={props.course.parts[1].exercises}
         // exercises3={props.course.parts[2].exercises}
         // exercises4={props.course.parts[3].exercises}
-        parts={props.coures.parts}
+        parts={props.course.parts}
       />
     </div>
   );
