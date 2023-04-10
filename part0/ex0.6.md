@@ -4,17 +4,11 @@ sequenceDiagram
     participant browser
     participant server
 
-    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/notes, { "content": "HTML is easy", "date": "2023-1-1" }
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa, { "content": "HTML is easy", "date": "2023-1-1" }
     activate server 
-    server-->>browser: HTTP status code 302
+    server-->>browser: HTTP status code 201, message: "note created"  
     deactivate server
 
-    Note right of browser: This is the URL redirect - asks browser to do a new https GET request to the address defined in the header's location
-
-    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
-    activate server
-    server-->>browser: HTTP status.code 201 created  
-    deactivate server
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
     activate server
