@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-const Button = (props) => (
-  <button onClick={props.handleClick}>{props.text}</button>
+const Button = ({handleClick, text}) => (
+  <button onClick={handleClick}>{text}</button>
 );
 
 const App = () => {
@@ -26,22 +26,10 @@ const App = () => {
     setSelected(Math.floor(Math.random() * anecdotes.length));
   };
 
-  const findMax = () => {
-    let max = -1,
-      maxKey = -1;
-
-    for (let key in votes) {
-      if (votes[key] > max) {
-        maxKey = key;
-        max = votes[key];
-      }
-    }
-    console.log(maxKey)
-    return maxKey;
-  };
-
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(new Array(8).fill(0));
+
+  const findMax = votes.indexOf(Math.max(...votes))
 
   return (
     <div>
@@ -54,7 +42,7 @@ const App = () => {
       <Button handleClick={handleVotes} text="Vote" />
       <br />
       <h1>Anecdote with most Votes</h1>
-      <p>{anecdotes[findMax()]}</p>
+      <p>{anecdotes[findMax]}</p>
     </div>
   );
 };
