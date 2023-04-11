@@ -11,17 +11,20 @@ const App = () => {
 
   const addContact = (event) => {
     event.preventDefault();
+    console.log(persons);
 
-    const Person = {
-      name: newName,
-      number: newNumber,
-      id: persons.length + 1,
-    };
-    alert(
-      newName + " with number " + newNumber + " is already added to phonebook"
-    );
+    const userExists = persons.some((person) => person.name === newName);
 
-    setPersons(persons.concat(Person));
+    if (userExists) {
+      alert(newName + " is already added to phonebook");
+    } else {
+      const Person = {
+        name: newName,
+        number: newNumber,
+        id: persons.length + 1,
+      };
+      setPersons(persons.concat(Person));
+    }
     setNewName("");
     setNewNumber("");
   };
@@ -41,14 +44,29 @@ const App = () => {
     setSearchName(event.target.value);
   };
 
+  const notesToShow = (searchName==="")
+  ? persons
+  : persons.filter(person => person.name === searchName)
+  console.log(notesToShow)
+
   return (
     <div>
       <h1>Phonebook</h1>
-      <Filter searchName={searchName} handleSearchName={handleSearchName}></Filter>
+      <Filter
+        searchName={searchName}
+        handleSearchName={handleSearchName}
+      ></Filter>
       <h1>Add a new</h1>
-      <PersonForm addContact={addContact} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}> </PersonForm>
+      <PersonForm
+        addContact={addContact}
+        newName={newName}
+        handleNameChange={handleNameChange}
+        newNumber={newNumber}
+        handleNumberChange={handleNumberChange}
+      >
+      </PersonForm>
       <h1>Name</h1>
-      <Persons persons={persons} searchName={searchName}/>
+      <Persons persons={notesToShow} />
     </div>
   );
 };
