@@ -18,12 +18,12 @@ const App = () => {
     if (userExists) {
       alert(newName + " is already added to phonebook");
     } else {
-      const Person = {
+      const person = {
         name: newName,
         number: newNumber,
         id: persons.length + 1,
       };
-      setPersons(persons.concat(Person));
+      setPersons(persons.concat(person));
     }
     setNewName("");
     setNewNumber("");
@@ -44,10 +44,10 @@ const App = () => {
     setSearchName(event.target.value);
   };
 
-  const notesToShow = (searchName==="")
+  const filterPersons = (searchName==="")
   ? persons
-  : persons.filter(person => person.name === searchName)
-  console.log(notesToShow)
+  : persons.filter(person => person.name.toLowerCase().includes(searchName.toLowerCase()))
+  console.log(filterPersons)
 
   return (
     <div>
@@ -66,7 +66,7 @@ const App = () => {
       >
       </PersonForm>
       <h1>Name</h1>
-      <Persons persons={notesToShow} />
+      <Persons persons={filterPersons} />
     </div>
   );
 };
