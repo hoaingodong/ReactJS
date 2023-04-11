@@ -1,60 +1,50 @@
-const Header = (props) => {
-  console.log(props);
+import React from "react";
+
+const Header = ({ course }) => {
   return (
     <div>
-      <h1>{props.name}</h1>
+      <h1>{course.name}</h1>
     </div>
   );
 };
-const Part = (props) => {
-  console.log(props);
+
+const Part = ({part}) => {
   return (
     <div>
       <p>
-        {props.part} {props.exercises}
+        {part.name} {part.exercises}
       </p>
     </div>
   );
 };
-const Content = (props) => {
-  console.log(props);
+
+const Content = ({parts}) => {
   return (
     <div>
-      <Part part={props.part1} exercises={props.exercises1} />
-      <Part part={props.part2} exercises={props.exercises2} />
-      <Part part={props.part3} exercises={props.exercises3} />
-      <Part part={props.part4} exercises={props.exercises4} />
+      {parts.map((item) => (
+        <Part part={item} />
+      ))}
     </div>
   );
 };
-const Total = (props) => {
-  console.log(props.parts);
+const Total = ({parts}) => {
+  console.log(parts);
   return (
     <div>
-      <p>total of {props.parts.reduce((accumulator, currentValue) => accumulator + currentValue.exercises, 0)} exercises</p>
+      <p><b>total of {parts.reduce((accumulator, currentValue) => accumulator + currentValue.exercises, 0)} exercises</b></p>
     </div>
   );
 };
-const Course = (props) => {
-  console.log(props);
-  console.log(props.course.parts);
+
+const Course = ({course}) => {
+
   return (
     <div>
-      <Header name={props.course.name} />
-      <Content
-        part1={props.course.parts[0].name}
-        exercises1={props.course.parts[0].exercises}
-        part2={props.course.parts[1].name}
-        exercises2={props.course.parts[1].exercises}
-        part3={props.course.parts[2].name}
-        exercises3={props.course.parts[2].exercises}
-        part4={props.course.parts[3].name}
-        exercises4={props.course.parts[3].exercises}
-      />
-      <Total
-        parts={props.course.parts}
-      />
+      <Header course={course} />
+      <Content parts={course.parts} />
+      <Total parts={course.parts} />
     </div>
   );
 };
+
 export default Course;
