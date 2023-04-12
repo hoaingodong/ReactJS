@@ -24,30 +24,23 @@ const App = () => {
     );
     const nameExist = persons.some((person) => person.name === newName);
 
-    console.log(userExists)
+    console.log(userExists);
     if (userExists) {
-      alert(newName +
-        "Contact was existed")
-      setNewName("");
-      setNewNumber("");
+      alert(newName + "Contact was existed");
     } else if (nameExist) {
-      window.confirm(newName +
-        " is already added to phonebook, replace the old number with a new one")
+      window.confirm(
+        newName +
+          " is already added to phonebook, replace the old number with a new one"
+      );
       const person = persons.find((n) => n.name === newName);
-      const id=person.id;
+      const id = person.id;
       const changedPerson = { ...person, number: newNumber };
 
-      personsService
-      .update(id, changedPerson)
-      .then((returnedPerson) => {
+      personsService.update(id, changedPerson).then((returnedPerson) => {
         setPersons(
-          persons.map((person) =>
-            person.id !== id ? person : returnedPerson
-          )
+          persons.map((person) => (person.id !== id ? person : returnedPerson))
         );
       });
-
-
     } else {
       const personObject = {
         name: newName,
@@ -61,6 +54,8 @@ const App = () => {
         setNewNumber("");
       });
     }
+    setNewName("");
+    setNewNumber("");
   };
 
   const handleNameChange = (event) => {
