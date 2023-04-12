@@ -24,15 +24,15 @@ const App = () => {
     );
     const nameExist = persons.some((person) => person.name === newName);
 
+    console.log(userExists)
     if (userExists) {
-      alert(
-        newName +
-          " is already added to phonebook, replace number with a new one"
-      );
+      alert(newName +
+        "Contact was existed")
       setNewName("");
       setNewNumber("");
     } else if (nameExist) {
-      console.log("hihi");
+      window.confirm(newName +
+        " is already added to phonebook, replace the old number with a new one")
       const person = persons.find((n) => n.name === newName);
       const id=person.id;
       const changedPerson = { ...person, number: newNumber };
