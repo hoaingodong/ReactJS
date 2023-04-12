@@ -4,10 +4,8 @@ const Persons = ({ persons }) => {
   return (
     <div>
       <ul>
-      {persons.map((person) => {
-            return (
-              <Person key={person.id} person={person} />
-            );
+        {persons.map((person) => {
+          return <Person key={person.id} person={person} />;
         })}
       </ul>
     </div>
