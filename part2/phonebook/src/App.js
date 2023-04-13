@@ -11,8 +11,8 @@ const App = () => {
   const [searchName, setSearchName] = useState("");
 
   useEffect(() => {
-    personsService.getAll().then((initialPerons) => {
-      setPersons(initialPerons);
+    personsService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
   }, []);
 
@@ -50,8 +50,6 @@ const App = () => {
 
       personsService.create(personObject).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewNumber("");
       });
     }
     setNewName("");
