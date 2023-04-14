@@ -16,11 +16,12 @@ const App = () => {
  const handleDelete = (id) => {
     const message = `Delete contact`;
     if (window.confirm(message)) {
-      personsService.deletePerson(id).catch(error => {
+      personsService.deletePerson(id)
+      .then(setPersons(persons.filter(p => id !== p.id)))      
+      .catch(error => {
         setErrorMessage(`Contact has already been removed from server`)
         setTimeout(() => { setErrorMessage(null) }, 5000)
-      });
-      setPersons(persons.filter(p => id !== p.id))
+      })
     }
   };
 
