@@ -5,7 +5,6 @@ const Search = ({searchName, setSearchName}) => {
     if (event.target.value.length > 0) {
       value = event.target.value
     }
-
     setSearchName(value)
   }
 

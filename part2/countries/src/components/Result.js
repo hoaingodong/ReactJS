@@ -1,23 +1,16 @@
-import axios from "axios";
-import React, { useEffect } from "react";
-
 import Country from "./Country";
 
-const Result = ({ countries, setCountries, searchName, showCountry }) => {
-  const url = `https://restcountries.com/v3.1/name/${searchName}`;
+const Result = ({ countries, showCountry, searchName }) => {
 
-  useEffect(() => {
-    axios.get(url).then((response) => {
-      setCountries(response.data);
-    });
-  });
+  const listcountries = countries.filter(country =>
+    country.name.official.toLowerCase().includes(searchName.toLowerCase()))
 
   return (
     <div>
-      {countries.length === 1 && <Country country={countries[0]}></Country>}
-      {countries.length >= 2 && countries.length <= 10 && (
+      {listcountries.length === 1 && <Country country={listcountries[0]}></Country>}
+      {listcountries.length >= 2 && listcountries.length <= 10 && (
         <div>
-          {countries.map((country, index) => {
+          {listcountries.map((country, index) => {
             return (
               <div key={index}>
                 <span>{country.name.official}</span>
@@ -35,7 +28,7 @@ const Result = ({ countries, setCountries, searchName, showCountry }) => {
         </div>
       )}
 
-      {countries.length > 10 && (
+      {listcountries.length > 10 && (
         <div>Too many matches, specify another filter</div>
       )}
     </div>
