@@ -31,94 +31,51 @@ app.use(morgan(function (tokens, req, res) {
     ].join(' ')
 }))
 
-
-let persons = [
-    {
-        "id": 1,
-        "name": "Arto Hellas",
-        "number": "040-123456"
-    },
-    {
-        "id": 2,
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523"
-    },
-    {
-        "id": 3,
-        "name": "Dan Abramov",
-        "number": "12-43-234345"
-    },
-    {
-        "id": 4,
-        "name": "Mary Poppendiec",
-        "number": "39-23-6423122"
-    }
-]
-
-app.get('/', (req, res) => {
-    res.send('<h1>Hello My Hoai xinh!</h1>')
-})
+const Person = require('./models/person')
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person.find({}).then(result => {
+        res.json(result)
+    })
 })
 
-app.get('/api/info', (req, res) => {
-    const dateNow = new Date(Date.now())
-    res.send(`<p>Phonebook has info of ${persons.length} pepple</p><p>${dateNow}</p>`)
-})
+app.post('/api/persons', (request, response) => {
+    const body = request.body
 
-app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)
-
-    if (person) {
-        res.json(person)
-    } else {
-        res.status(404).end()
-    }
-
-    res.json(person)
-})
-
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(note => note.id !== id)
-
-    res.status(204).end()
-})
-
-const generateId = () => {
-    const maxID = persons.length > 0
-        ? Math.max(...persons.map(n => n.id))
-        : 0
-    return maxID + 1
-}
-
-app.post('/api/persons', (req, res) => {
-    const body = req.body
     if (!body.name) {
-        return res.status(400).json({
+        return response.status(400).json({
             error: 'name missing'
         })
-    } else if (!body.number) {
-        return res.status(400).json({
+    }
+
+    if (!body.number) {
+        return response.status(400).json({
             error: 'number missing'
         })
     }
-    const names = persons.map(p => p.name)
-    if (names.includes(body.name)) {
-        return res.status(400).json({
-            error: 'name must be unique'
+
+    //check existed contact
+    Person.find({}).then(persons => {
+        console.log('persons: ', persons)
+
+        if (persons.some(person => person.name === body.name)) {
+            console.log("name must be unique")
+            return response.status(400).json({
+                error: 'name must be unique'
+            })
+        }
+
+        let person = new Person(  {
+            name: body.name,
+            number: body.number,
         })
-    }
-    const person = {
-        name: body.name,
-        number: body.number,
-        id: generateId(persons),
-    }
-    persons = persons.concat(person)
-    res.json(person)
+
+        // save into MongoDB
+        person.save().then(savedPerson => {
+            console.log('savedPerson', savedPerson)
+            response.json(savedPerson)
+        })
+    })
 })
 
 app.use(unknownEndpoint)
