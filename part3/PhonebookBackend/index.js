@@ -1,7 +1,8 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
-var morgan = require('morgan')
+const morgan = require('morgan')
+const Person = require('./models/person')
 
 const requestLogger = (request, response, next) => {
     console.log('Method:', request.method)
@@ -26,8 +27,6 @@ app.use(morgan(function (tokens, req, res) {
         JSON.stringify(req.body)
     ].join(' ')
 }))
-
-const Person = require('./models/person')
 
 app.get('/api/persons', (req, res) => {
     Person.find({}).then(result => {
