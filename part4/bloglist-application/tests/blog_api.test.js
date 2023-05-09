@@ -88,6 +88,51 @@ test('an invalid post can not be added', async () => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
+test('delete successfully with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(
+        helper.initialBlogs.length - 1
+    )
+
+    const titles = blogsAtEnd.map(r => r.title)
+
+    expect(titles).not.toContain(blogToDelete.title)
+})
+
+test('update post successfully with status code 204 if request is valid', async () => {
+    const newBlog = {
+        "likes": 20,
+        "title": "Gao",
+        "author": "Gao xinh",
+        "url": "hihi"
+    }
+
+    const blogs = await helper.blogsInDb()
+    const ids = blogs.map(r=> r.id)
+    const id = ids[0]
+
+    await api
+        .put(`/api/blogs/${id}`)
+        .send(newBlog)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd= await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+
+    const titles = blogsAtEnd.map(n => n.title)
+    expect(titles).toContain(
+        'Gao'
+    )
+})
 afterAll(async () => {
     await mongoose.connection.close()
 })
