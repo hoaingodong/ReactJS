@@ -33,29 +33,6 @@ test('verifies that the unique identifier property of the blog posts is named id
     expect(ids[0]).toBeDefined()
 })
 
-// test('a new blog post can be added ', async () => {
-//     const newBlog = {
-//         likes: 50,
-//         title: "Gao xinh",
-//         author: "Gao",
-//         url: "https://fullstackopen.com/en/part4/testing_the_backend#test-environment"
-//     }
-//
-//     await api
-//         .post('/api/blogs')
-//         .send(newBlog)
-//         .expect(201)
-//         .expect('Content-Type', /application\/json/)
-//
-//     const blogsAtEnd = await helper.blogsInDb()
-//     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
-//
-//     const contents = blogsAtEnd.map(n => n.content)
-//     expect(title).toContain(
-//         'Gao xinh'
-//     )
-// })
-
 test('a valid note can be added ', async () => {
     const newBlog = {
         "likes": 500,
@@ -78,6 +55,43 @@ test('a valid note can be added ', async () => {
         'Gao'
     )
 })
+
+test('a new blog post missed likes value can have the default value', async () => {
+    const newBlog = {
+        "title": "Bo xinh",
+        "url": "hihi",
+        "author": "Bo "
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd= await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
+    const likes = blogsAtEnd.map(n => n.likes)
+    expect(likes[likes.length+1]) === 0;
+})
+
+test('an invalid post can not be added', async () => {
+    const newBlog = {
+        "url": "kaka",
+        "author": "Minh Quan"
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd= await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
 afterAll(async () => {
     await mongoose.connection.close()
 })

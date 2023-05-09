@@ -19,9 +19,6 @@ blogsRouter.post('/', (request, response, next) => {
     if (body.url === undefined) {
         return response.status(400).json({ error: 'url missing' })
     }
-    if (body.likes === undefined) {
-        return response.status(400).json({ error: 'likes missing' })
-    }
 
     const blog = new Blog({
         title: body.title,
