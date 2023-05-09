@@ -1,11 +1,10 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-
 const api = supertest(app)
+const helper = require('./test_helper')
 
 const Blog = require('../models/blog')
-const helper = require('./test_helper')
 
 beforeEach(async () => {
     await Blog.deleteMany({})
@@ -21,15 +20,12 @@ test('blogs are returned as json', async () => {
 
 test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
-
     expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
 test('verifies that the unique identifier property of the blog posts is named id', async () => {
     const response = await api.get('/api/blogs')
-
     const ids = response.body.map(r => r.id)
-
     expect(ids[0]).toBeDefined()
 })
 
