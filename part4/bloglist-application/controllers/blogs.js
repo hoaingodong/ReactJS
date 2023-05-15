@@ -1,40 +1,56 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', (request, response) => {
-    Blog.find({}).then(blogs => {
+    Blog.find({}).populate('user')
+        .then(blogs => {
         response.json(blogs)
     })
 })
 
-blogsRouter.post('/', (request, response, next) => {
+blogsRouter.post('/', async (request, response, next) => {
     const body = request.body
 
-    if (body.title === undefined) {
-        return response.status(400).json({ error: 'title missing' })
-    }
-    if (body.author === undefined) {
-        return response.status(400).json({ error: 'author missing' })
-    }
-    if (body.url === undefined) {
-        return response.status(400).json({ error: 'url missing' })
-    }
+    const user = request.user
 
     const blog = new Blog({
         title: body.title,
         author: body.author,
         url: body.url,
-        likes: body.likes
+        likes: body.likes,
+        user: user.id
     })
+    try {
+        const savedBlog = await blog.save()
+        user.blogs = user.blogs.concat(savedBlog._id)
+        await user.save().catch(error => next(error))
 
-    blog.save().then(result => {
-        response.status(201).json(result)
-    })
+        response.json(savedBlog)
+    } catch (exception) {
+        next(exception)
+    }
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
-    await Blog.findByIdAndRemove(request.params.id)
-    response.status(204).end()
+blogsRouter.delete('/:id', async (request, response, next) => {
+
+    const token = request.token
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    const user = await User.findById(decodedToken.id)
+
+    const blogToDelete = await Blog.findById(request.params.id)
+
+    if ( blogToDelete.user._id.toString() === user._id.toString() ) {
+        try {
+            await Blog.findByIdAndRemove(request.params.id)
+            response.status(204).end()
+        } catch (exception) {
+            next(exception)
+        }
+    } else {
+        return response.status(401).json({ error: `Unauthorized` })
+    }
 })
 
 blogsRouter.put('/:id', (request, response, next) => {
