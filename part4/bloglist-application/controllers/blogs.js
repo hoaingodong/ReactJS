@@ -2,15 +2,16 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', (request, response) => {
     Blog.find({}).populate('user')
         .then(blogs => {
-        response.json(blogs)
-    })
+            response.json(blogs)
+        })
 })
 
-blogsRouter.post('/', async (request, response, next) => {
+blogsRouter.post('/', middleware.tokenValidator, middleware.userExtractor, async (request, response, next) => {
     const body = request.body
 
     const user = request.user
@@ -33,11 +34,9 @@ blogsRouter.post('/', async (request, response, next) => {
     }
 })
 
-blogsRouter.delete('/:id', async (request, response, next) => {
+blogsRouter.delete('/:id', middleware.tokenValidator, middleware.userExtractor, async (request, response, next) => {
 
-    const token = request.token
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-    const user = await User.findById(decodedToken.id)
+    const user = request.user
 
     const blogToDelete = await Blog.findById(request.params.id)
 
