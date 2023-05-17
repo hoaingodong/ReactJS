@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -16,11 +16,11 @@ const App = () => {
     const [message, setMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
 
-    useEffect(() => {
-        blogService.getAll().then(blogs =>
-            setBlogs(blogs)
-        )
-    }, [])
+    const getAllBlogs = async () => {
+        const blogs = await blogService.getAll()
+        blogs.sort((a, b) => (a.likes > b.likes) ? 1 : -1)
+        setBlogs(blogs)
+    }
 
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -28,9 +28,11 @@ const App = () => {
             const user = JSON.parse(loggedUserJSON)
             setUser(user)
             blogService.setToken(user.token)
+            getAllBlogs()
         }
     }, [])
 
+    const blogFormRef = useRef()
     const handleLogin = async (event) => {
         event.preventDefault()
 
@@ -72,9 +74,9 @@ const App = () => {
                 setMessage(null)
             }, 5000)
             setBlogs(blogs.concat(returnedNote))
+            blogFormRef.current.toggleVisibility()
 
-        }
-        catch(exception) {
+        } catch (exception) {
             setErrorMessage(
                 `Cannot add blog ${blogObject.title}`
             )
@@ -85,6 +87,55 @@ const App = () => {
         }
     }
 
+    const updateBlog = async (BlogToUpdate) => {
+        try {
+            const updatedBlog = await blogService
+                .update(BlogToUpdate)
+            console.log(updatedBlog)
+            setMessage(
+                `Blog ${BlogToUpdate.title} was successfully updated`
+            )
+            setBlogs(blogs.map(blog => blog.id !== BlogToUpdate.id ? blog : updatedBlog))
+            setErrorMessage(null)
+            setTimeout(() => {
+                setMessage(null)
+            }, 5000)
+        } catch (exception) {
+            setErrorMessage(
+                `Cannot update blog ${BlogToUpdate.title}`
+            )
+            setMessage(null)
+            setTimeout(() => {
+                setMessage(null)
+            }, 5000)
+        }
+    }
+
+    const deleteBlog = async (BlogToDelete) => {
+        try {
+            const message = `Remove blog ${BlogToDelete.title}`;
+            if (window.confirm(message)) {
+                blogService
+                    .remove(BlogToDelete.id)
+                setMessage(
+                    `Blog ${BlogToDelete.title} was successfully deleted`
+                )
+                setBlogs(blogs.filter(blog => blog.id !== BlogToDelete.id))
+                setErrorMessage(null)
+                setTimeout(() => {
+                    setMessage(null)
+                }, 5000)
+            }
+        } catch (exception) {
+            setErrorMessage(
+                `Cannot delete blog ${BlogToDelete.title}`
+            )
+            setMessage(null)
+            setTimeout(() => {
+                setMessage(null)
+            }, 5000)
+        }
+    }
 
     if (user === null) {
         return (
@@ -101,8 +152,8 @@ const App = () => {
                 <LoginForm
                     username={username}
                     password={password}
-                    handleUsernameChange={({ target }) => setUsername(target.value)}
-                    handlePasswordChange={({ target }) => setPassword(target.value)}
+                    handleUsernameChange={({target}) => setUsername(target.value)}
+                    handlePasswordChange={({target}) => setPassword(target.value)}
                     handleSubmit={handleLogin}
                 />
             </div>
@@ -124,11 +175,16 @@ const App = () => {
                 <p>Welcome {user.username} </p>
                 <button onClick={() => handleLogout()}>Logout</button>
                 {blogs.map(blog =>
-                    <Blog key={blog.id} blog={blog}/>
+                    <Blog
+                        key={blog.id}
+                        blog={blog}
+                        updateBlog={updateBlog}
+                        deleteBlog={deleteBlog}
+                    />
                 )}
             </div>
             <div>
-                <Togglable buttonLabel="new note" >
+                <Togglable buttonLabel="new note" ref={blogFormRef}>
                     <BlogForm createBlog={addBlog}></BlogForm>
                 </Togglable>
 
