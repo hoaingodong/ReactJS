@@ -34,19 +34,17 @@ blogsRouter.post('/', middleware.tokenValidator, middleware.userExtractor, async
 
 blogsRouter.delete('/:id', middleware.tokenValidator, middleware.userExtractor, async (request, response, next) => {
     try {
-
         const user = request.user
         const blogToDelete = await Blog.findById(request.params.id)
 
         if (!blogToDelete) {
             return response.status(400).json({error: `Blog not found`})
+        }
+        if (blogToDelete.user._id.toString() === user._id.toString()) {
+            await Blog.findByIdAndRemove(request.params.id)
+            response.status(204).end()
         } else {
-            if (blogToDelete.user._id.toString() === user._id.toString()) {
-                await Blog.findByIdAndRemove(request.params.id)
-                response.status(204).end()
-            } else {
-                return response.status(401).json({error: `Unauthorized`})
-            }
+            return response.status(401).json({error: `Unauthorized`})
         }
     } catch (exception) {
         next(exception)
