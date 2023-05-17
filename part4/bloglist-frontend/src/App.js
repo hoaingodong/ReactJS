@@ -3,15 +3,16 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from "./components/Notification";
+import BlogForm from "./components/BlogForm";
+import Togglable from "./components/Togglable";
+import LoginForm from "./components/LoginForm";
+
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
-    const [newTitle, setNewTitle] = useState('')
-    const [newAuthor, setNewAuthor] = useState('')
-    const [newUrl, setNewUrl] = useState('')
     const [message, setMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
 
@@ -58,25 +59,8 @@ const App = () => {
         blogService.setToken(null)
     };
 
-    const handleTitleChange = (event) => {
-        setNewTitle(event.target.value);
-    };
 
-    const handleAuthorChange = (event) => {
-        setNewAuthor(event.target.value);
-    };
-
-    const handleUrlChange = (event) => {
-        setNewUrl(event.target.value);
-    };
-
-    const addBlog = async (event) => {
-        event.preventDefault()
-        const blogObject = {
-            title: newTitle,
-            author: newAuthor,
-            url: newUrl
-        }
+    const addBlog = async (blogObject) => {
         try {
             const returnedNote = await blogService
                 .create(blogObject)
@@ -88,9 +72,7 @@ const App = () => {
                 setMessage(null)
             }, 5000)
             setBlogs(blogs.concat(returnedNote))
-            setNewTitle('')
-            setNewAuthor('')
-            setNewUrl('')
+
         }
         catch(exception) {
             setErrorMessage(
@@ -102,52 +84,7 @@ const App = () => {
             }, 5000)
         }
     }
-    const blogForm = () => (
-        <form onSubmit={addBlog}>
-            <div>Title:
-                <input
-                    value={newTitle}
-                    onChange={handleTitleChange}
-                /></div>
-            <div>Author:
-                <input
-                    value={newAuthor}
-                    onChange={handleAuthorChange}
-                />
-            </div>
-            <div>Url:
-                <input
-                    value={newUrl}
-                    onChange={handleUrlChange}
-                />
-            </div>
-            <button type="submit">save</button>
-        </form>
-    )
 
-    const loginForm = () => (
-        <form onSubmit={handleLogin}>
-            <div>
-                username
-                <input
-                    type="text"
-                    value={username}
-                    name="Username"
-                    onChange={({target}) => setUsername(target.value)}
-                />
-            </div>
-            <div>
-                password
-                <input
-                    type="password"
-                    value={password}
-                    name="Password"
-                    onChange={({target}) => setPassword(target.value)}
-                />
-            </div>
-            <button type="submit">login</button>
-        </form>
-    )
 
     if (user === null) {
         return (
@@ -161,7 +98,13 @@ const App = () => {
                     message &&
                     <Notification message={message}/>
                 }
-                {loginForm()}
+                <LoginForm
+                    username={username}
+                    password={password}
+                    handleUsernameChange={({ target }) => setUsername(target.value)}
+                    handlePasswordChange={({ target }) => setPassword(target.value)}
+                    handleSubmit={handleLogin}
+                />
             </div>
         )
     }
@@ -185,8 +128,10 @@ const App = () => {
                 )}
             </div>
             <div>
-                <h2>Create new blog</h2>
-                {blogForm()}
+                <Togglable buttonLabel="new note" >
+                    <BlogForm createBlog={addBlog}></BlogForm>
+                </Togglable>
+
             </div>
         </div>
     )
