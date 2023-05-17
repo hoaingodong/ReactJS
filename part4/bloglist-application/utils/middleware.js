@@ -29,6 +29,8 @@ const errorHandler = (error, request, response, next) => {
         return response.status(401).json({
             error: 'token expired'
         })
+    } else {
+        return response.status(502).json({error: "Error Server"})
     }
     logger.error(error.message)
     next(error)
@@ -47,13 +49,14 @@ const tokenExtractor = (request, response, next) => {
 const tokenValidator = (request, response, next) => {
     const token = request.token
     if (!token) {
-        return response.status(401).json({ error: 'token missing' })
+        return response.status(401).json({error: 'token missing'})
     }
 
     const decodedToken = jwt.verify(token, process.env.SECRET)
     if (!decodedToken.id) {
-        return response.status(401).json({ error: 'invalid token' })
+        return response.status(401).json({error: 'invalid token'})
     }
+
     next()
 }
 
