@@ -1,7 +1,5 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
-const jwt = require('jsonwebtoken')
 const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', (request, response) => {
@@ -35,24 +33,25 @@ blogsRouter.post('/', middleware.tokenValidator, middleware.userExtractor, async
 })
 
 blogsRouter.delete('/:id', middleware.tokenValidator, middleware.userExtractor, async (request, response, next) => {
+    try {
+        const user = request.user
+        const blogToDelete = await Blog.findById(request.params.id)
 
-    const user = request.user
-
-    const blogToDelete = await Blog.findById(request.params.id)
-
-    if ( blogToDelete.user._id.toString() === user._id.toString() ) {
-        try {
+        if (!blogToDelete) {
+            return response.status(400).json({error: `Blog not found`})
+        }
+        if (blogToDelete.user._id.toString() === user._id.toString()) {
             await Blog.findByIdAndRemove(request.params.id)
             response.status(204).end()
-        } catch (exception) {
-            next(exception)
+        } else {
+            return response.status(401).json({error: `Unauthorized`})
         }
-    } else {
-        return response.status(401).json({ error: `Unauthorized` })
+    } catch (exception) {
+        next(exception)
     }
 })
 
-blogsRouter.put('/:id', (request, response, next) => {
+blogsRouter.put('/:id', middleware.tokenValidator, middleware.userExtractor, (request, response, next) => {
     const body = request.body
 
     const blog = {
@@ -62,7 +61,7 @@ blogsRouter.put('/:id', (request, response, next) => {
         url: body.url
     }
 
-    Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    Blog.findByIdAndUpdate(request.params.id, blog, {new: true})
         .then(updatedBlog => {
             response.json(updatedBlog)
         })
