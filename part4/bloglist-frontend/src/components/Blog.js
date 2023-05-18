@@ -32,18 +32,22 @@ const Blog = (props) => {
   }
 
   return (
-      <div style={blogStyle}>
-        <div>
-          <p>{blog.title} <button onClick={toggleVisibility}>{buttonLabel}</button></p>
-        </div>
-        <div style={showWhenVisible}>
-          <p>{blog.url}</p>
-          <p>{blogObject.likes} <button onClick={increaseLikes}>like</button></p>
-          <p>{blog.author}</p>
-          <button onClick={removeBlog}>remove</button>
-        </div>
+    <div style={blogStyle} className={'blog'}>
+      <div>
+        <p>{blog.title} - {blog.author}
+          <button onClick={toggleVisibility}>{buttonLabel}</button>
+        </p>
       </div>
-  )
+      <div style={showWhenVisible}>
+        <p>{blog.url}</p>
+        <p>{blogObject.likes}
+          <button onClick={increaseLikes}>like</button>
+        </p>
+        <p>{blog.author}</p>
+        <button onClick={removeBlog}>remove</button>
+      </div>
+    </div>
+  );
 }
 
 
