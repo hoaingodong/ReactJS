@@ -18,9 +18,14 @@ const Anecdote = ({anecdote}) => {
 }
 
 const AnecdoteList = () => {
-    const anecdotes = useSelector(state => state)
-    const byVotes = (b1, b2) => b2.votes - b1.votes
+    const anecdotes = useSelector(({filter, anecdotes}) => {
+        if ( filter === null ) {
+            return anecdotes
+        }
+        return anecdotes.filter(anecdote => anecdote.content.match(f))
+    })
 
+    const byVotes = (b1, b2) => b2.votes - b1.votesilter
     return (
         anecdotes.sort(byVotes).map(anecdote => <Anecdote anecdote={anecdote}/>)
     )
