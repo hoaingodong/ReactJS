@@ -25,9 +25,9 @@ const anecdoteReducer = (state = initialState, action) => {
 
     switch (action.type) {
         case 'NEW_ANECDOTE':
-            return state.concat(action.data)
+            return state.concat(action.payload)
         case 'VOTE': {
-            const id = action.data.id
+            const id = action.payload.id
             const votedAnecdote = state.find(anecdote => anecdote.id === id)
             const changedAnecdote = {
                 ...votedAnecdote,
@@ -43,7 +43,7 @@ const anecdoteReducer = (state = initialState, action) => {
 export const createAnecdote = (anecdote) => {
     return {
         type: 'NEW_ANECDOTE',
-        data: {
+        payload: {
             content: anecdote,
             id: getId(),
             votes: 0
@@ -54,7 +54,7 @@ export const createAnecdote = (anecdote) => {
 export const vote = (id) => {
     return {
         type: 'VOTE',
-        data: {id}
+        payload: {id}
     }
 }
 

@@ -22,10 +22,11 @@ const AnecdoteList = () => {
         if ( filter === null ) {
             return anecdotes
         }
-        return anecdotes.filter(anecdote => anecdote.content.match(f))
+        return anecdotes.filter(anecdote => anecdote.content.match(filter))
     })
 
-    const byVotes = (b1, b2) => b2.votes - b1.votesilter
+    const byVotes = (b1, b2) => b2.votes - b1.votes
+
     return (
         anecdotes.sort(byVotes).map(anecdote => <Anecdote anecdote={anecdote}/>)
     )
