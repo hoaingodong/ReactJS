@@ -6,15 +6,12 @@ import {createNotification} from "../reducers/notificationReducer";
 const AnecdoteForm = (props) => {
     const dispatch = useDispatch()
 
-    const addAnecdote = (event) => {
+    const addAnecdote = async (event) => {
         event.preventDefault()
         const content = event.target.anecdote.value
         event.target.anecdote.value = ''
         dispatch(createAnecdote(content))
-        dispatch(createNotification(`Anecdote ${content} successfully added`))
-        setTimeout(() => {
-            dispatch(createNotification(null))
-        }, 5000)
+        dispatch(createNotification(`Anecdote ${content} successfully added`, 10))
     }
 
     return (
