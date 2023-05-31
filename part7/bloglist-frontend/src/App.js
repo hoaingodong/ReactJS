@@ -8,19 +8,13 @@ import LoginForm from './components/LoginForm'
 import { useDispatch } from 'react-redux'
 import { createNotification } from './reducers/notificationReducer'
 import BlogList from './components/BlogList'
+import { initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-
-  const getAllBlogs = async () => {
-    const blogs = await blogService.getAll()
-    blogs.sort((a, b) => (a.likes > b.likes) ? 1 : -1)
-    setBlogs(blogs)
-  }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -30,8 +24,11 @@ const App = () => {
 
       blogService.setToken(user.token)
     }
-    getAllBlogs()
   }, [])
+
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   const blogFormRef = useRef()
   const handleLogin = async (event) => {
@@ -58,45 +55,6 @@ const App = () => {
     blogService.setToken(null)
   }
 
-  const addBlog = async (blogObject) => {
-    try {
-      const returnedNote = await blogService
-        .create(blogObject)
-      dispatch(createNotification(`Blog ${blogObject.title} was successfully added`, 'success', 10))
-      setBlogs(blogs.concat(returnedNote))
-      blogFormRef.current.toggleVisibility()
-
-    } catch (exception) {
-      dispatch(createNotification(`Cannot add blog ${blogObject.title}`, 'error', 10))
-    }
-  }
-
-  const updateBlog = async (BlogToUpdate) => {
-    try {
-      const updatedBlog = await blogService
-        .update(BlogToUpdate)
-      console.log(updatedBlog)
-      setBlogs(blogs.map(blog => blog.id !== BlogToUpdate.id ? blog : updatedBlog))
-      dispatch(createNotification(`Blog ${BlogToUpdate.title} was successfully updated`, 'success', 10))
-    } catch (exception) {
-      dispatch(createNotification(`Cannot update blog ${BlogToUpdate.title}`, 'error', 10))
-    }
-  }
-
-  const deleteBlog = async (BlogToDelete) => {
-    try {
-      const message = `Remove blog ${BlogToDelete.title}`
-      if (window.confirm(message)) {
-        await blogService
-          .remove(BlogToDelete.id)
-        setBlogs(blogs.filter(blog => blog.id !== BlogToDelete.id))
-        dispatch(createNotification(`Blog ${BlogToDelete.title} was successfully deleted`, 'success', 10))
-      }
-    } catch (exception) {
-      dispatch(createNotification(`Cannot delete blog ${BlogToDelete.title}`, 'success', 10))
-    }
-  }
-
   if (user === null) {
     return (
       <div>
@@ -120,11 +78,11 @@ const App = () => {
         <Notification></Notification>
         <p>Welcome {user.username} </p>
         <button onClick={() => handleLogout()}>Logout</button>
-        <BlogList blogs={blogs} updateBlog={updateBlog} deleteBlog={deleteBlog}></BlogList>
+        <BlogList ></BlogList>
       </div>
       <div>
         <Togglable buttonLabel="new blog" ref={blogFormRef}>
-          <BlogForm createBlog={addBlog}></BlogForm>
+          <BlogForm></BlogForm>
         </Togglable>
 
       </div>

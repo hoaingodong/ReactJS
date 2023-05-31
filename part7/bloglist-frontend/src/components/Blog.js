@@ -1,27 +1,32 @@
-import React , { useState } from 'react'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { deleteBlog, likeBlog } from '../reducers/blogReducer'
+import { createNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, updateBlog, deleteBlog }) => {
+const Blog = ({ blog }) => {
+  const dispatch = useDispatch()
 
-  const [blogObject, setBlogObject] = useState(blog)
   const [visible, setVisible] = useState(false)
   const showWhenVisible = { display: visible ? '' : 'none' }
+  const buttonLabel = visible ? 'hide' : 'view'
 
   const toggleVisibility = () => {
     setVisible(!visible)
   }
 
-  const buttonLabel = visible ? 'hide' : 'view'
-
   const increaseLikes = () => {
-    const updatedBlog = ({
-      ...blog,
-      likes: blog.likes + 1
-    })
-    updateBlog(updatedBlog)
-    setBlogObject(updatedBlog)
+    dispatch(likeBlog(blog))
+    dispatch(
+      createNotification(`Blog ${blog.title} successfully updated`, 'success', 5)
+    )
   }
 
-  const removeBlog = () => deleteBlog(blog)
+  const removeBlog = () => {
+    dispatch(deleteBlog(blog.id))
+    dispatch(
+      createNotification(`Blog ${blog.title} successfully deleted`, 'success', 5)
+    )
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -40,8 +45,11 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
       </div>
       <div style={showWhenVisible}>
         <p>{blog.url}</p>
-        <p>{blogObject.likes}
-          <button id='like-button' onClick={increaseLikes}>like</button>
+        <p>
+          {blog.likes}
+          <button id='like-button' onClick={increaseLikes}>
+              like
+          </button>
         </p>
         <p>{blog.author}</p>
         <button id='remove-button' onClick={removeBlog}>remove</button>
