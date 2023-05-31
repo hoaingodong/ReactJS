@@ -1,7 +1,7 @@
 import React , { useState } from 'react'
 
-const Blog = (props) => {
-  const blog = props.blog
+const Blog = ({ blog, updateBlog, deleteBlog }) => {
+
   const [blogObject, setBlogObject] = useState(blog)
   const [visible, setVisible] = useState(false)
   const showWhenVisible = { display: visible ? '' : 'none' }
@@ -17,11 +17,11 @@ const Blog = (props) => {
       ...blog,
       likes: blog.likes + 1
     })
-    props.updateBlog(updatedBlog)
+    updateBlog(updatedBlog)
     setBlogObject(updatedBlog)
   }
 
-  const removeBlog = () => props.deleteBlog(blog)
+  const removeBlog = () => deleteBlog(blog)
 
   const blogStyle = {
     paddingTop: 10,
