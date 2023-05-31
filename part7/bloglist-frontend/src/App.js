@@ -76,6 +76,7 @@ const App = () => {
       const updatedBlog = await blogService
         .update(BlogToUpdate)
       console.log(updatedBlog)
+      setBlogs(blogs.map(blog => blog.id !== BlogToUpdate.id ? blog : updatedBlog))
       dispatch(createNotification(`Blog ${BlogToUpdate.title} was successfully updated`, 'success', 10))
     } catch (exception) {
       dispatch(createNotification(`Cannot update blog ${BlogToUpdate.title}`, 'error', 10))
@@ -88,6 +89,7 @@ const App = () => {
       if (window.confirm(message)) {
         await blogService
           .remove(BlogToDelete.id)
+        setBlogs(blogs.filter(blog => blog.id !== BlogToDelete.id))
         dispatch(createNotification(`Blog ${BlogToDelete.title} was successfully deleted`, 'success', 10))
       }
     } catch (exception) {
