@@ -1,9 +1,9 @@
 import blogService from '../services/blogs'
 import { createNotification } from './notificationReducer'
+
 const blogReducer = (state = [], action) => {
   console.log('state now: ', state)
   console.log('action', action)
-
   switch (action.type) {
   case 'INIT_BLOGS':
     return action.payload
@@ -28,6 +28,7 @@ const blogReducer = (state = [], action) => {
 export const initializeBlogs = () => {
   return async (dispatch) => {
     const blogs = await blogService.getAll()
+    console.log(blogs)
     blogs.sort((a, b) => (a.likes > b.likes) ? 1 : -1)
     dispatch({
       type: 'INIT_BLOGS',

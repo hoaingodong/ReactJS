@@ -5,7 +5,6 @@ import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import { useDispatch } from 'react-redux'
 import BlogList from './components/BlogList'
-import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUser } from './reducers/userReducer'
 import { useSelector } from 'react-redux'
 import { logout } from './reducers/userReducer'
@@ -16,8 +15,8 @@ const App = () => {
   const user = useSelector(state => state.user)
 
   useEffect(() => {
-    dispatch(initializeBlogs())
     dispatch(initializeUser())
+
   }, [dispatch])
 
   const handleLogout = () => {
