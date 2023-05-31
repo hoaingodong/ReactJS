@@ -2,8 +2,11 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const middleware = require('../utils/middleware')
 
-blogsRouter.get('/', (request, response) => {
-    Blog.find({}).populate('user')
+blogsRouter.get('/', middleware.tokenValidator, middleware.userExtractor, (request, response) => {
+
+    const user = request.user
+
+    Blog.find({}).populate('user').find({user })
         .then(blogs => {
             response.json(blogs)
         })
