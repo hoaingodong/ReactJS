@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { login } from '../reducers/userReducer'
+import { login } from '../reducers/authReducer'
 import { initializeBlogs } from '../reducers/blogReducer'
 
 const LoginForm = () => {

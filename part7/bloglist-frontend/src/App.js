@@ -1,21 +1,26 @@
-import { useEffect, useRef } from 'react'
-import Notification from './components/Notification'
-import BlogForm from './components/BlogForm'
-import Togglable from './components/Togglable'
-import LoginForm from './components/LoginForm'
+import {
+  BrowserRouter as Router,
+  Route, Routes
+} from 'react-router-dom'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import BlogList from './components/BlogList'
-import { initializeUser, logout } from './reducers/userReducer'
+import { initializeUser, logout } from './reducers/authReducer'
 import { initializeBlogs } from './reducers/blogReducer'
-// import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUsers } from './reducers/userReducer'
+import Home from './components/Home'
+import UserList from './components/UserList'
+import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+
+
 
 const App = () => {
   const dispatch = useDispatch()
-  const blogFormRef = useRef()
   const user = useSelector(state => state.user)
 
   useEffect(() => {
-    dispatch(initializeUser())
+    dispatch(initializeUser()),
+    dispatch(initializeUsers())
   }, [])
 
 
@@ -41,20 +46,19 @@ const App = () => {
   }
 
   return (
-    <div>
+    <Router>
       <div>
         <h2>blogs</h2>
         <Notification></Notification>
         <p>Welcome {user.username} </p>
         <button onClick={() => handleLogout()}>Logout</button>
-        <BlogList ></BlogList>
       </div>
-      <div>
-        <Togglable buttonLabel="new blog" ref={blogFormRef}>
-          <BlogForm></BlogForm>
-        </Togglable>
-      </div>
-    </div>
+      <Routes>
+        <Route path="/users" element={<UserList/>} />
+        {/*<Route path="/users/:id" element={<UserList/>} />*/}
+        <Route path="/" element={<Home/>} />
+      </Routes>
+    </Router>
   )
 }
 
