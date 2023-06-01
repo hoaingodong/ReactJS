@@ -1,7 +1,6 @@
 import blogService from '../services/blogs'
 import loginService from '../services/login'
 import { createNotification } from '../reducers/notificationReducer'
-import { initializeBlogs } from './blogReducer'
 
 const userReducer = (state = null, action) => {
   console.log('state now: ', state)
@@ -20,23 +19,40 @@ const userReducer = (state = null, action) => {
 }
 
 export const initializeUser = () => {
-  return async (dispatch) => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      blogService.setToken(user.token)
-      dispatch( {
-        type: 'INIT_USER',
-        payload: user
-      })
-    }
-    dispatch( {
+  const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+  if (loggedUserJSON) {
+    const user = JSON.parse(loggedUserJSON)
+    blogService.setToken(user.token)
+    return {
       type: 'INIT_USER',
-      payload: null
-    })
-    dispatch(initializeBlogs)
+      payload: user
+    }
+  }
+
+  return {
+    type: 'INIT_USER',
+    payload: null
   }
 }
+
+// export const initializeUser = () => {
+//   return async (dispatch) => {
+//     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+//     if (loggedUserJSON) {
+//       const user = await JSON.parse(loggedUserJSON)
+//       blogService.setToken(user.token)
+//       dispatch( {
+//         type: 'INIT_USER',
+//         payload: user
+//       })
+//     }
+//     dispatch( {
+//       type: 'INIT_USER',
+//       payload: null
+//     })
+//   }
+// }
+
 
 export const login = (username, password) => {
   return async (dispatch) => {

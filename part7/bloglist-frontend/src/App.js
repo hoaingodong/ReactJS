@@ -3,11 +3,11 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import BlogList from './components/BlogList'
-import { initializeUser } from './reducers/userReducer'
-import { useSelector } from 'react-redux'
-import { logout } from './reducers/userReducer'
+import { initializeUser, logout } from './reducers/userReducer'
+import { initializeBlogs } from './reducers/blogReducer'
+// import { initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -16,8 +16,15 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeUser())
+  }, [])
 
-  }, [dispatch])
+
+  useEffect(() => {
+    if (user) {
+      dispatch(initializeBlogs())
+    }
+  }, [user])
+
 
   const handleLogout = () => {
     dispatch(logout())
@@ -46,7 +53,6 @@ const App = () => {
         <Togglable buttonLabel="new blog" ref={blogFormRef}>
           <BlogForm></BlogForm>
         </Togglable>
-
       </div>
     </div>
   )
