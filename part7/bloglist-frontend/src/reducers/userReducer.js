@@ -35,6 +35,25 @@ export const initializeUser = () => {
   }
 }
 
+// export const initializeUser = () => {
+//   return async (dispatch) => {
+//     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+//     if (loggedUserJSON) {
+//       const user = await JSON.parse(loggedUserJSON)
+//       blogService.setToken(user.token)
+//       dispatch( {
+//         type: 'INIT_USER',
+//         payload: user
+//       })
+//     }
+//     dispatch( {
+//       type: 'INIT_USER',
+//       payload: null
+//     })
+//   }
+// }
+
+
 export const login = (username, password) => {
   return async (dispatch) => {
     try {
