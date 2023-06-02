@@ -17,12 +17,17 @@ blogsRouter.post('/', middleware.tokenValidator, middleware.userExtractor, async
 
     const user = request.user
 
+    if (!body.comments){
+        body.comments = []
+    }
+
     const blog = new Blog({
         title: body.title,
         author: body.author,
         url: body.url,
         likes: body.likes,
-        user: user.id
+        user: user.id,
+        comments: body.comments
     })
     try {
         const savedBlog = await blog.save()
@@ -57,11 +62,16 @@ blogsRouter.delete('/:id', middleware.tokenValidator, middleware.userExtractor, 
 blogsRouter.put('/:id', middleware.tokenValidator, middleware.userExtractor, (request, response, next) => {
     const body = request.body
 
+    if (!body.comments){
+        body.comments = []
+    }
+
     const blog = {
         likes: body.likes,
         author: body.author,
         title: body.title,
-        url: body.url
+        url: body.url,
+        comments: body.comments
     }
 
     Blog.findByIdAndUpdate(request.params.id, blog, {new: true})
