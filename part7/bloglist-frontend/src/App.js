@@ -24,7 +24,7 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeUser()),
     dispatch(initializeUsers())
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     if (user) {

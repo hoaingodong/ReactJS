@@ -1,4 +1,3 @@
-
 import BlogList from './BlogList'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
@@ -9,9 +8,9 @@ const Home = () => {
   return (
     <div>
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <BlogForm></BlogForm>
+        <BlogForm/>
       </Togglable>
-      <BlogList></BlogList>
+      <BlogList/>
     </div>
   )
 }

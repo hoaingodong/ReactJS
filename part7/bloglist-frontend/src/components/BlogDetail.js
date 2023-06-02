@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { deleteBlog, likeBlog } from '../reducers/blogReducer'
 import { createNotification } from '../reducers/notificationReducer'
 import { useParams } from 'react-router-dom'
+import { comment } from '../reducers/blogReducer'
 
 const BlogDetail = ({ blogs }) => {
   const dispatch = useDispatch()
@@ -24,6 +25,13 @@ const BlogDetail = ({ blogs }) => {
     )
   }
 
+  const addComment = async (event) => {
+    event.preventDefault()
+    const commentAdded = event.target.commentAdded.value
+    event.target.commentAdded.value = ''
+    dispatch(comment(blog, commentAdded))
+  }
+
   const removeBlog = () => {
     dispatch(deleteBlog(blog.id))
     dispatch(
@@ -40,27 +48,45 @@ const BlogDetail = ({ blogs }) => {
   }
   if (blog)
     return (
-      <div style={blogStyle} className={'blog'}>
-        <div>
-          <p>{blog.title} - {blog.author}
-            <button onClick={toggleVisibility}>{buttonLabel}</button>
-          </p>
-        </div>
-        <div style={showWhenVisible}>
-          <p>{blog.url}</p>
-          <p>
-            {blog.likes}
-            <button id='like-button' onClick={increaseLikes}>
+      <div>
+        <div style={blogStyle} className={'blog'}>
+          <div>
+            <p>{blog.title} - {blog.author}
+              <button onClick={toggleVisibility}>{buttonLabel}</button>
+            </p>
+          </div>
+          <div style={showWhenVisible}>
+            <p>{blog.url}</p>
+            <p>
+              {blog.likes}
+              <button id='like-button' onClick={increaseLikes}>
               like
-            </button>
-          </p>
-          <p>{blog.author}</p>
-          <button id='remove-button' onClick={removeBlog}>remove</button>
+              </button>
+            </p>
+            <p>{blog.author}</p>
+            <button id='remove-button' onClick={removeBlog}>remove</button>
+          </div>
+        </div>
+        <div>
+          <h2>Add comments for blogs</h2>
+          <form onSubmit={addComment}>
+            <div>
+              Comment: <input id="commentAdded" name="commentAdded" />
+            </div>
+            <div>
+              <button type="submit">add comment</button>
+            </div>
+          </form>
+          <ul>
+            {blog.comments.map((comment) =>
+              <li
+                key={comment}> {comment}</li>
+            )}
+          </ul>
         </div>
       </div>
     )
   return null
 }
-
 
 export default BlogDetail

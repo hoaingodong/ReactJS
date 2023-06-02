@@ -3,6 +3,8 @@ import loginService from '../services/login'
 import { createNotification } from '../reducers/notificationReducer'
 
 const authReducer = (state = null, action) => {
+  console.log('state now: ', state)
+  console.log('action', action)
   switch (action.type) {
   case 'INIT_USER':
     return action.payload
