@@ -2,6 +2,8 @@ import blogService from '../services/blogs'
 import { createNotification } from './notificationReducer'
 
 const blogReducer = (state = [], action) => {
+  console.log('state now: ', state)
+  console.log('action', action)
   switch (action.type) {
   case 'INIT_BLOGS':
     return action.payload
@@ -18,6 +20,14 @@ const blogReducer = (state = [], action) => {
     }
     return state.map((blog) => (blog.id !== id ? blog : BlogAfterUpdating))
   }
+  case 'COMMENT': {
+    const id = action.payload.id
+    const updatedBlog = state.find((blog) => blog.id === id)
+    const changedBlog = {
+      ...updatedBlog,
+      comments: action.payload.comments
+    }
+    return state.map((blog) => (blog.id !== id ? blog : changedBlog))}
   default:
     return state
   }
@@ -68,7 +78,6 @@ export const deleteBlog = (id) => {
 export const likeBlog = (blog) => {
   return async (dispatch) => {
     try {
-      console.log(blog)
       const updatedBlog = await blogService.update({
         ...blog,
         likes: blog.likes + 1
@@ -82,5 +91,24 @@ export const likeBlog = (blog) => {
     }
   }
 }
+export const comment = (blog, comment) => {
+  return async (dispatch) => {
+    try {
+      const updatedBlog = await blogService.update({
+        ...blog,
+        comments: blog.comments.concat([comment])
+      })
+      console.log(updatedBlog.comments)
+      dispatch({
+        type: 'COMMENT',
+        payload: updatedBlog
+      })
+    } catch (exception) {
+      dispatch(createNotification(`cannot update blog ${blog.title}`, 'error', 5))
+    }
+  }
+}
+
+
 
 export default blogReducer

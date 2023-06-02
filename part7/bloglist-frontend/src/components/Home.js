@@ -1,7 +1,6 @@
-
-import BlogList from './BlogList'
+import BlogList from './Blogs/BlogList'
 import Togglable from './Togglable'
-import BlogForm from './BlogForm'
+import BlogForm from './Blogs/BlogForm'
 import { useRef } from 'react'
 
 const Home = () => {
@@ -9,9 +8,9 @@ const Home = () => {
   return (
     <div>
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <BlogForm></BlogForm>
+        <BlogForm/>
       </Togglable>
-      <BlogList></BlogList>
+      <BlogList/>
     </div>
   )
 }
