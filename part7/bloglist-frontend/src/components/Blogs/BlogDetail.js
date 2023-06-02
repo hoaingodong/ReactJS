@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { deleteBlog, likeBlog } from '../reducers/blogReducer'
-import { createNotification } from '../reducers/notificationReducer'
+import { deleteBlog, likeBlog } from '../../reducers/blogReducer'
+import { createNotification } from '../../reducers/notificationReducer'
 import { useParams } from 'react-router-dom'
-import { comment } from '../reducers/blogReducer'
+import { comment } from '../../reducers/blogReducer'
 
 const BlogDetail = ({ blogs }) => {
   const dispatch = useDispatch()

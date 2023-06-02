@@ -8,11 +8,11 @@ import { initializeUser, logout } from './reducers/authReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUsers } from './reducers/userReducer'
 import Home from './components/Home'
-import UserList from './components/UserList'
+import UserList from './components/Users/UserList'
 import Notification from './components/Notification'
-import LoginForm from './components/LoginForm'
-import UserDetail from './components/UserDetail'
-import BlogDetail from './components/BlogDetail'
+import LoginForm from './components/Users/LoginForm'
+import UserDetail from './components/Users/UserDetail'
+import BlogDetail from './components/Blogs/BlogDetail'
 import Menu from './components/Menu'
 
 const App = () => {
@@ -24,7 +24,7 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeUser()),
     dispatch(initializeUsers())
-  }, [dispatch])
+  }, [])
 
   useEffect(() => {
     if (user) {
