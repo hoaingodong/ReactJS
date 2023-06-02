@@ -4,6 +4,7 @@ import { deleteBlog, likeBlog } from '../../reducers/blogReducer'
 import { createNotification } from '../../reducers/notificationReducer'
 import { useParams } from 'react-router-dom'
 import { comment } from '../../reducers/blogReducer'
+import { Button, Form } from 'react-bootstrap'
 
 const BlogDetail = ({ blogs }) => {
   const dispatch = useDispatch()
@@ -41,10 +42,12 @@ const BlogDetail = ({ blogs }) => {
 
   const blogStyle = {
     paddingTop: 10,
-    paddingLeft: 2,
+    paddingLeft: 10,
+    paddingBottom: 10,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
+    marginTop: 5
   }
   if (blog)
     return (
@@ -52,31 +55,37 @@ const BlogDetail = ({ blogs }) => {
         <div style={blogStyle} className={'blog'}>
           <div>
             <p>{blog.title} - {blog.author}
-              <button onClick={toggleVisibility}>{buttonLabel}</button>
+              <Button variant="secondary" onClick={toggleVisibility}>{buttonLabel}</Button>
             </p>
           </div>
           <div style={showWhenVisible}>
             <p>{blog.url}</p>
             <p>
               {blog.likes}
-              <button id='like-button' onClick={increaseLikes}>
+              <Button variant="success" id='like-button' onClick={increaseLikes}>
               like
-              </button>
+              </Button>
             </p>
             <p>{blog.author}</p>
-            <button id='remove-button' onClick={removeBlog}>remove</button>
+            <Button variant="danger" id='remove-button' onClick={removeBlog}>remove</Button>
           </div>
         </div>
         <div>
           <h2>Add comments for blogs</h2>
-          <form onSubmit={addComment}>
-            <div>
-              Comment: <input id="commentAdded" name="commentAdded" />
-            </div>
-            <div>
-              <button type="submit">add comment</button>
-            </div>
-          </form>
+          <Form onSubmit={addComment}>
+            <Form.Group>
+              <Form.Label>Comment:</Form.Label>
+              <Form.Control
+                type="text"
+                name="commentAdded"
+                id="commentAdded"
+              />
+              <br/>
+              <Button variant="primary" type="submit">
+                Add Comment
+              </Button>
+            </Form.Group>
+          </Form>
           <ul>
             {blog.comments.map((comment) =>
               <li

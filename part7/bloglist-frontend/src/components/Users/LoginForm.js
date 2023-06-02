@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { login } from '../../reducers/authReducer'
 import { initializeBlogs } from '../../reducers/blogReducer'
+import { Button, Form } from 'react-bootstrap'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -17,17 +18,26 @@ const LoginForm = () => {
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-          username <input id="username" type="text" name="username" />
-      </div>
-      <div>
-          password <input id="password" type="password" name="password" />
-      </div>
-      <button id="login-button" type="submit">
-          login
-      </button>
-    </form>
+    <Form onSubmit={handleLogin}>
+      <Form.Group>
+        <Form.Label>Username:</Form.Label>
+        <Form.Control
+          type="text"
+          name="username"
+          id="username"
+        />
+        <Form.Label>Password:</Form.Label>
+        <Form.Control
+          type="password"
+          name="password"
+          id="password"
+        />
+        <br/>
+        <Button variant="secondary" type="submit">
+              Add
+        </Button>
+      </Form.Group>
+    </Form>
   )
 }
 
