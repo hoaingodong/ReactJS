@@ -14,6 +14,7 @@ import LoginForm from './components/Users/LoginForm'
 import UserDetail from './components/Users/UserDetail'
 import BlogDetail from './components/Blogs/BlogDetail'
 import Menu from './components/Menu'
+import { Button } from 'react-bootstrap'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -38,7 +39,7 @@ const App = () => {
 
   if (user === null) {
     return (
-      <div>
+      <div className="container">
         <h2>Log in to application </h2>
         <Notification></Notification>
         <LoginForm/>
@@ -47,22 +48,25 @@ const App = () => {
   }
 
   return (
-    <Router>
-      <div>
-        <h2>blogs</h2>
-        <Notification></Notification>
-        <p>Welcome {user.username} </p>
-        <Menu></Menu>
-        <button onClick={() => handleLogout()}>Logout</button>
-      </div>
-      <Routes>
-        <Route path="/users" element={<UserList/>} />
-        <Route path="/users/:id"element={<UserDetail users={users}/>}> </Route>
-        <Route path="/blogs/:id" element={<BlogDetail blogs={blogs}/>} />
-        <Route path="/" element={<Home/>} />
-        <Route path="/blogs" element={<Home/>} />
-      </Routes>
-    </Router>
+    <div className="container">
+      <Router>
+        <div>
+          <h2>blogs</h2>
+          <Notification></Notification>
+          <p>Welcome {user.username} </p>
+          <Menu></Menu>
+          <br/>
+          <Button variant="danger" onClick={() => handleLogout()}>Logout</Button>
+        </div>
+        <Routes>
+          <Route path="/users" element={<UserList/>} />
+          <Route path="/users/:id"element={<UserDetail users={users}/>}> </Route>
+          <Route path="/blogs/:id" element={<BlogDetail blogs={blogs}/>} />
+          <Route path="/" element={<Home/>} />
+          <Route path="/blogs" element={<Home/>} />
+        </Routes>
+      </Router>
+    </div>
   )
 }
 
